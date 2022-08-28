@@ -1,7 +1,4 @@
-//Constants
-const SUITS = ["Diamonds", "Clubs", "Spades", "Hearts"];
-const RANKS = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"];
-const VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]; //for face cards
+import {CARD_SUITS, CARD_RANKS, CARD_VALUES} from './utils/constants.js'
 
 /** creates a card class which can be used to make card objets
  * suit - suit of card
@@ -15,13 +12,18 @@ class Card {
     this.value = value;
   }
 
-  show() {}
-
+  /**
+   * Get a string representation for the card
+   * @returns a string representation of the card that includes Rank and Suit
+   */
   getCardAsString() {
     return `${this.rank} of ${this.suit}`;
   }
 }
 
+/**
+ * Exception used to represent a bad operation on an empty Deck
+ */
 export class EmptyDeckException extends Error {
   constructor(message) {
     super(message);
@@ -36,6 +38,7 @@ export default class Deck {
   /**
    * constructor creates an array of cards (deck) at the start of deck object creation
    * Optional Shuffle parameter determines if deck is immediately shuffled after creation
+   * If Shuffle is set false, then the deck will be left in ascending order per suit
    */
   constructor(shuffle = true) {
     this.resetDeck(shuffle);
@@ -44,12 +47,13 @@ export default class Deck {
   /**
    * Reset state of the deck to 52 cards, used for class construction as well
    * Optional Shuffle parameter determines if deck is immediately shuffled after creation
+   * If Shuffle is set false, then the deck will be left in ascending order per suit
    */
   resetDeck(shuffle = true) {
     this.deck = [];
-    for (let i = 0; i < SUITS.length; i++) {
-      for (let j = 0; j < RANKS.length; j++) {
-        this.deck.push(new Card(SUITS[i], RANKS[j], VALUES[j]));
+    for (let i = 0; i < CARD_SUITS.length; i++) {
+      for (let j = 0; j < CARD_RANKS.length; j++) {
+        this.deck.push(new Card(CARD_SUITS[i], CARD_RANKS[j], CARD_VALUES[j]));
       }
     }
     if (shuffle) {
