@@ -14,41 +14,38 @@ class Card {
     this.rank = rank;
     this.value = value;
   }
-  
+
   show() {}
 
   getCardAsString() {
-    return `${this.value} ${this.rank} of ${this.suit}`;
+    return `${this.rank} of ${this.suit}`;
   }
 }
 
-
 class EmptyDeckException extends Error {
-    constructor(message) {
-      super(message);
-      this.name = "EmptyDeckException";
-    }
+  constructor(message) {
+    super(message);
+    this.name = "EmptyDeckException";
   }
+}
 
 /**
  * class to create a Deck object with several methods that manipulates the deck
  */
 class Deck {
-
-  /** 
+  /**
    * constructor creates an array of cards (deck) at the start of deck object creation
    * Optional Shuffle parameter determines if deck is immediately shuffled after creation
    */
-  constructor(shuffle=true) {
-    this.resetDeck(shuffle)
+  constructor(shuffle = true) {
+    this.resetDeck(shuffle);
   }
 
-
-  /** 
+  /**
    * Reset state of the deck to 52 cards, used for class construction as well
    * Optional Shuffle parameter determines if deck is immediately shuffled after creation
    */
-  resetDeck(shuffle=true) {
+  resetDeck(shuffle = true) {
     this.deck = [];
     for (let i = 0; i < SUITS.length; i++) {
       for (let j = 0; j < RANKS.length; j++) {
@@ -56,11 +53,11 @@ class Deck {
       }
     }
     if (shuffle) {
-        this.shuffleDeck()
+      this.shuffleDeck();
     }
   }
 
-  /** 
+  /**
    * Get cards remaining in the deck
    * @returns number of cards remaining in the deck
    */
@@ -69,7 +66,7 @@ class Deck {
   }
 
   /**
-   * Get list of cards remaining in deck 
+   * Get list of cards remaining in deck
    * @returns list of card objects representing cards remaining in deck
    */
   getRemainingCardsList() {
@@ -109,18 +106,18 @@ class Deck {
   renderDeck() {
     document.getElementById("cards_in_deck_div").innerHTML = "";
     if (this.getRemainingCardsCount() > 0) {
-        for (let i = 0; i < this.deck.length; i++) {
-            const currentCard = this.deck[i]
-            const divToAdd = document.createElement("div")
-            divToAdd.innerHTML = currentCard.getCardAsString();
-            document.getElementById("cards_in_deck_div").appendChild(divToAdd);
-        }
-    } else {
-        const divToAdd = document.createElement("div")
-        divToAdd.innerHTML =  "There are no more cards remaining in the deck"
+      for (let i = this.deck.length-1; i >= 0; i--) {
+        const currentCard = this.deck[i];
+        const divToAdd = document.createElement("div");
+        divToAdd.innerHTML = currentCard.getCardAsString();
         document.getElementById("cards_in_deck_div").appendChild(divToAdd);
+      }
+    } else {
+      const divToAdd = document.createElement("div");
+      divToAdd.innerHTML = "There are no more cards remaining in the deck";
+      document.getElementById("cards_in_deck_div").appendChild(divToAdd);
     }
-    document.getElementById("cards_remaining_counter").innerHTML = 'Cards remaining in deck: ' + this.getRemainingCardsCount()
+    document.getElementById("cards_remaining_counter").innerHTML = "Cards remaining in deck: " + this.getRemainingCardsCount();
   }
 
   /**
@@ -128,16 +125,17 @@ class Deck {
    */
   renderOneCardDeal() {
     try {
-        const dealtCard = this.dealOneCard();
-        const divToAdd = document.createElement("div")
-        divToAdd.innerHTML = dealtCard.getCardAsString();
+      const dealtCard = this.dealOneCard();
+      const divToAdd = document.createElement("div");
+      divToAdd.innerHTML = dealtCard.getCardAsString();
 
-        document.getElementById("dealt_cards_div").appendChild(divToAdd);
-        this.renderDeck();
+      const targetDiv = document.getElementById("dealt_cards_div")
+      targetDiv.insertBefore(divToAdd, targetDiv.children[0]);
+      this.renderDeck();
     } catch (err) {
-        if (err instanceof EmptyDeckException) {
-            alert("There are no cards left in the deck to deal.");
-        }
+      if (err instanceof EmptyDeckException) {
+        alert("There are no cards left in the deck to deal.");
+      }
     }
   }
 
@@ -154,7 +152,7 @@ class Deck {
     let count = this.getRemainingCardsCount();
     document.getElementById("deal_btn").onclick = () => {
       console.log(count);
-      this.renderOneCardDeal()
+      this.renderOneCardDeal();
       console.log(this.getRemainingCardsList());
     };
     return newArr;
@@ -162,17 +160,15 @@ class Deck {
 
   handleReset() {
     document.getElementById("reset_btn").onclick = () => {
-        document.getElementById("dealt_cards_div").innerHTML = '';
-        this.resetDeck();
-        this.renderDeck();
-    }
-
+      document.getElementById("dealt_cards_div").innerHTML = "";
+      this.resetDeck();
+      this.renderDeck();
+    };
   }
 }
 
-//rough tests
-
-let newDeck = new Deck();
-newDeck.handleClickShuffle();
-newDeck.handleClickDeal();
-newDeck.handleReset();
+let myDeck = new Deck();
+myDeck.renderDeck();
+myDeck.handleClickShuffle();
+myDeck.handleClickDeal();
+myDeck.handleReset();
