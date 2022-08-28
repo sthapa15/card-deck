@@ -14,8 +14,21 @@ class Card {
     this.rank = rank;
     this.value = value;
   }
+  
   show() {}
+
+  getCardAsString() {
+    return `${this.value} ${this.rank} of ${this.suit}`;
+  }
 }
+
+
+class EmptyDeckException extends Error {
+    constructor(message) {
+      super(message);
+      this.name = "EmptyDeckException";
+    }
+  }
 
 /**
  * class to create a Deck object with several methods that manipulates the deck
@@ -86,7 +99,7 @@ class Deck {
     if (this.deck.length > 0) {
       return this.deck.pop();
     } else {
-      throw new Error("No cards remaining!");
+      throw new EmptyDeckException("No cards remaining!");
     }
   }
 
@@ -97,14 +110,15 @@ class Deck {
     document.getElementById("cards_in_deck_div").innerHTML = "";
     if (this.getRemainingCardsCount() > 0) {
         for (let i = 0; i < this.deck.length; i++) {
-            const div_to_add = document.createElement("div")
-            div_to_add.innerHTML = `${this.deck[i].value} ${this.deck[i].rank} of ${this.deck[i].suit}`;
-            document.getElementById("cards_in_deck_div").appendChild(div_to_add);
+            const currentCard = this.deck[i]
+            const divToAdd = document.createElement("div")
+            divToAdd.innerHTML = currentCard.getCardAsString();
+            document.getElementById("cards_in_deck_div").appendChild(divToAdd);
         }
     } else {
-        const div_to_add = document.createElement("div")
-        div_to_add.innerHTML =  "There are no more cards remaining in the deck"
-        document.getElementById("cards_in_deck_div").appendChild(div_to_add);
+        const divToAdd = document.createElement("div")
+        divToAdd.innerHTML =  "There are no more cards remaining in the deck"
+        document.getElementById("cards_in_deck_div").appendChild(divToAdd);
     }
     document.getElementById("cards_remaining_counter").innerHTML = 'Cards remaining in deck: ' + this.getRemainingCardsCount()
   }
@@ -113,13 +127,18 @@ class Deck {
    * Renders the deal of one card
    */
   renderOneCardDeal() {
-    let card = this.dealOneCard();
-    const dealtCards = document.createElement("div");
-    const dealtText = document.createTextNode(`${card.rank} ${card.value} ${card.suit}`);
+    try {
+        const dealtCard = this.dealOneCard();
+        const divToAdd = document.createElement("div")
+        divToAdd.innerHTML = dealtCard.getCardAsString();
 
-    dealtCards.appendChild(dealtText);
-    document.getElementById("dealt_cards_div").appendChild(dealtCards);
-    this.renderDeck();
+        document.getElementById("dealt_cards_div").appendChild(divToAdd);
+        this.renderDeck();
+    } catch (err) {
+        if (err instanceof EmptyDeckException) {
+            alert("There are no cards left in the deck to deal.");
+        }
+    }
   }
 
   handleClickShuffle() {
