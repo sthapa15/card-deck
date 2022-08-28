@@ -21,30 +21,51 @@ class Card {
  * class to create a Deck object with several methods that manipulates the deck
  */
 class Deck {
-  /** constructor creates an array of cards (deck) at the start of deck object creation */
-  constructor() {
-    this.reset()
+
+  /** 
+   * constructor creates an array of cards (deck) at the start of deck object creation
+   * Optional Shuffle parameter determines if deck is immediately shuffled after creation
+   */
+  constructor(shuffle=true) {
+    this.resetDeck(shuffle)
   }
 
-  reset() {
+
+  /** 
+   * Reset state of the deck to 52 cards, used for class construction as well
+   * Optional Shuffle parameter determines if deck is immediately shuffled after creation
+   */
+  resetDeck(shuffle=true) {
     this.deck = [];
     for (let i = 0; i < SUITS.length; i++) {
       for (let j = 0; j < RANKS.length; j++) {
         this.deck.push(new Card(SUITS[i], RANKS[j], VALUES[j]));
       }
     }
+    if (shuffle) {
+        this.shuffleDeck()
+    }
   }
 
-  /** returns length of deck */
-  getCount() {
+  /** 
+   * Get cards remaining in the deck
+   * @returns number of cards remaining in the deck
+   */
+  getRemainingCardsCount() {
     return this.deck.length;
   }
 
-  getRemainingCards() {
+  /**
+   * Get list of cards remaining in deck 
+   * @returns list of card objects representing cards remaining in deck
+   */
+  getRemainingCardsList() {
     return this.deck;
   }
 
-  //new method
+  /**
+   * Shuffles the current deck
+   */
   shuffleDeck() {
     let location1, location2, temp;
     for (let i = 0; i < 1000; i++) {
@@ -55,51 +76,55 @@ class Deck {
       this.deck[location1] = this.deck[location2];
       this.deck[location2] = temp;
     }
-    return this;
   }
 
+  /**
+   * Deals one card by removing and returning the top card from the deck
+   * @returns Card that is dealt
+   */
   dealOneCard() {
-    let dealtCard = this.deck.pop();
     if (this.deck.length > 0) {
-      return dealtCard;
+      return this.deck.pop();
     } else {
       throw new Error("No cards remaining!");
     }
   }
 
+  /**
+   * Renders the current deck into the HTML page
+   */
   renderDeck() {
-    document.getElementById("card").innerHTML = "";
-    for (let i = 0; i < this.deck.length; i++) {
-      const rank = document.createElement("div");
-      const value = document.createElement("div");
-      const suit = document.createElement("div");
-      rank.className = "card";
-      value.className = "value";
-      suit.className = "suit " + this.deck[i].suit;
-
-      value.innerHTML = `${this.deck[i].value} ${this.deck[i].rank} of ${this.deck[i].suit}`;
-      rank.appendChild(value);
-      rank.appendChild(suit);
-
-      document.getElementById("cardsRemainingCounter").innerHTML = 'Cards remaining in deck: ' + this.getCount()
-      document.getElementById("card").appendChild(rank);
+    document.getElementById("cards_in_deck_div").innerHTML = "";
+    if (this.getRemainingCardsCount() > 0) {
+        for (let i = 0; i < this.deck.length; i++) {
+            const div_to_add = document.createElement("div")
+            div_to_add.innerHTML = `${this.deck[i].value} ${this.deck[i].rank} of ${this.deck[i].suit}`;
+            document.getElementById("cards_in_deck_div").appendChild(div_to_add);
+        }
+    } else {
+        const div_to_add = document.createElement("div")
+        div_to_add.innerHTML =  "There are no more cards remaining in the deck"
+        document.getElementById("cards_in_deck_div").appendChild(div_to_add);
     }
+    document.getElementById("cards_remaining_counter").innerHTML = 'Cards remaining in deck: ' + this.getRemainingCardsCount()
   }
 
-  renderDeal() {
+  /**
+   * Renders the deal of one card
+   */
+  renderOneCardDeal() {
     let card = this.dealOneCard();
-
     const dealtCards = document.createElement("div");
     const dealtText = document.createTextNode(`${card.rank} ${card.value} ${card.suit}`);
 
     dealtCards.appendChild(dealtText);
-    document.getElementById("myList").appendChild(dealtCards);
+    document.getElementById("dealt_cards_div").appendChild(dealtCards);
     this.renderDeck();
   }
 
   handleClickShuffle() {
     //const btn = document.getElementById("shuffle");
-    document.getElementById("shuffle").onclick = () => {
+    document.getElementById("shuffle_btn").onclick = () => {
       this.shuffleDeck();
       this.renderDeck();
     };
@@ -107,21 +132,19 @@ class Deck {
 
   handleClickDeal() {
     let newArr = [];
-    let count = this.getCount();
-    document.getElementById("deal").onclick = () => {
+    let count = this.getRemainingCardsCount();
+    document.getElementById("deal_btn").onclick = () => {
       console.log(count);
-      this.renderDeal()
-      console.log(this.getRemainingCards());
+      this.renderOneCardDeal()
+      console.log(this.getRemainingCardsList());
     };
     return newArr;
   }
 
   handleReset() {
-    document.getElementById("reset").onclick = () => {
-        console.log('clearing elements');
-        document.getElementById("myList").innerHTML = '';
-        this.reset();
-        this.shuffleDeck();
+    document.getElementById("reset_btn").onclick = () => {
+        document.getElementById("dealt_cards_div").innerHTML = '';
+        this.resetDeck();
         this.renderDeck();
     }
 
@@ -131,11 +154,6 @@ class Deck {
 //rough tests
 
 let newDeck = new Deck();
-
-//test shuffle new deck created
-newDeck.shuffleDeck(); //can put this up there but it will do shuffle first
-//newDeck.renderDeck();
-//console.log(newDeck.dealOneCard());
 newDeck.handleClickShuffle();
 newDeck.handleClickDeal();
 newDeck.handleReset();
