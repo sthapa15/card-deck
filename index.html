@@ -1,13 +1,25 @@
 <!DOCTYPE html>
 
 <html>
-  <head> </head>
+  <head>
+    <link rel="stylesheet" href="./style/style.css" />
+  </head>
 
   <body>
     <button id="shuffle">Shuffle</button>
-    <div id="card"><!--card deck info--></div>
-    <button id="dealt">Deal A Card</button>
-    <div id="myList"><!--dealt card info--></div>
+    <button id="deal">Deal A Card</button>
+    <button id="reset">Reset Deck</button>
+    <div class="grid-container">
+      <div class="shuffle-cards">
+        <h1>Current Deck</h1>
+        <div id="card"><!--card deck info--></div>
+      </div>
+
+      <div class="dealt-cards">
+        <h1>Cards Dealt</h1>
+        <div id="myList"><!--dealt card info--></div>
+      </div>
+    </div>
 
     <script type="text/javascript" src="./deck.js"></script>
   </body>

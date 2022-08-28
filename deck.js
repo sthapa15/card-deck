@@ -23,6 +23,10 @@ class Card {
 class Deck {
   /** constructor creates an array of cards (deck) at the start of deck object creation */
   constructor() {
+    this.reset()
+  }
+
+  reset() {
     this.deck = [];
     for (let i = 0; i < SUITS.length; i++) {
       for (let j = 0; j < RANKS.length; j++) {
@@ -65,7 +69,6 @@ class Deck {
 
   renderDeck() {
     document.getElementById("card").innerHTML = "";
-
     for (let i = 0; i < this.deck.length; i++) {
       const rank = document.createElement("div");
       const value = document.createElement("div");
@@ -90,11 +93,13 @@ class Deck {
 
     dealtCards.appendChild(dealtText);
     document.getElementById("myList").appendChild(dealtCards);
+    this.renderDeck();
   }
 
   handleClickShuffle() {
     //const btn = document.getElementById("shuffle");
     document.getElementById("shuffle").onclick = () => {
+      this.shuffleDeck();
       this.renderDeck();
     };
   }
@@ -102,12 +107,23 @@ class Deck {
   handleClickDeal() {
     let newArr = [];
     let count = this.getCount();
-    document.getElementById("dealt").onclick = () => {
+    document.getElementById("deal").onclick = () => {
       console.log(this.renderDeal());
       console.log(count);
       console.log(this.getRemainingCards());
     };
     return newArr;
+  }
+
+  handleReset() {
+    document.getElementById("reset").onclick = () => {
+        console.log('clearing elements');
+        document.getElementById("myList").innerHTML = '';
+        this.reset();
+        this.shuffleDeck();
+        this.renderDeck();
+    }
+
   }
 }
 
@@ -121,3 +137,4 @@ newDeck.shuffleDeck(); //can put this up there but it will do shuffle first
 //console.log(newDeck.dealOneCard());
 newDeck.handleClickShuffle();
 newDeck.handleClickDeal();
+newDeck.handleReset();
