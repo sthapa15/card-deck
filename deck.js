@@ -22,7 +22,7 @@ class Card {
   }
 }
 
-class EmptyDeckException extends Error {
+export class EmptyDeckException extends Error {
   constructor(message) {
     super(message);
     this.name = "EmptyDeckException";
@@ -32,7 +32,7 @@ class EmptyDeckException extends Error {
 /**
  * class to create a Deck object with several methods that manipulates the deck
  */
-class Deck {
+export default class Deck {
   /**
    * constructor creates an array of cards (deck) at the start of deck object creation
    * Optional Shuffle parameter determines if deck is immediately shuffled after creation
@@ -99,76 +99,4 @@ class Deck {
       throw new EmptyDeckException("No cards remaining!");
     }
   }
-
-  /**
-   * Renders the current deck into the HTML page
-   */
-  renderDeck() {
-    document.getElementById("cards_in_deck_div").innerHTML = "";
-    if (this.getRemainingCardsCount() > 0) {
-      for (let i = this.deck.length-1; i >= 0; i--) {
-        const currentCard = this.deck[i];
-        const divToAdd = document.createElement("div");
-        divToAdd.innerHTML = currentCard.getCardAsString();
-        document.getElementById("cards_in_deck_div").appendChild(divToAdd);
-      }
-    } else {
-      const divToAdd = document.createElement("div");
-      divToAdd.innerHTML = "There are no more cards remaining in the deck";
-      document.getElementById("cards_in_deck_div").appendChild(divToAdd);
-    }
-    document.getElementById("cards_remaining_counter").innerHTML = "Cards remaining in deck: " + this.getRemainingCardsCount();
-  }
-
-  /**
-   * Renders the deal of one card
-   */
-  renderOneCardDeal() {
-    try {
-      const dealtCard = this.dealOneCard();
-      const divToAdd = document.createElement("div");
-      divToAdd.innerHTML = dealtCard.getCardAsString();
-
-      const targetDiv = document.getElementById("dealt_cards_div")
-      targetDiv.insertBefore(divToAdd, targetDiv.children[0]);
-      this.renderDeck();
-    } catch (err) {
-      if (err instanceof EmptyDeckException) {
-        alert("There are no cards left in the deck to deal.");
-      }
-    }
-  }
-
-  handleClickShuffle() {
-    //const btn = document.getElementById("shuffle");
-    document.getElementById("shuffle_btn").onclick = () => {
-      this.shuffleDeck();
-      this.renderDeck();
-    };
-  }
-
-  handleClickDeal() {
-    let newArr = [];
-    let count = this.getRemainingCardsCount();
-    document.getElementById("deal_btn").onclick = () => {
-      console.log(count);
-      this.renderOneCardDeal();
-      console.log(this.getRemainingCardsList());
-    };
-    return newArr;
-  }
-
-  handleReset() {
-    document.getElementById("reset_btn").onclick = () => {
-      document.getElementById("dealt_cards_div").innerHTML = "";
-      this.resetDeck();
-      this.renderDeck();
-    };
-  }
 }
-
-let myDeck = new Deck();
-myDeck.renderDeck();
-myDeck.handleClickShuffle();
-myDeck.handleClickDeal();
-myDeck.handleReset();
