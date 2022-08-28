@@ -81,6 +81,7 @@ class Deck {
       rank.appendChild(value);
       rank.appendChild(suit);
 
+      document.getElementById("cardsRemainingCounter").innerHTML = 'Cards remaining in deck: ' + this.getCount()
       document.getElementById("card").appendChild(rank);
     }
   }
@@ -108,8 +109,8 @@ class Deck {
     let newArr = [];
     let count = this.getCount();
     document.getElementById("deal").onclick = () => {
-      console.log(this.renderDeal());
       console.log(count);
+      this.renderDeal()
       console.log(this.getRemainingCards());
     };
     return newArr;
