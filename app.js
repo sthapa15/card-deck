@@ -25,7 +25,7 @@ function renderDeck(deck) {
  */
 function renderCardDeal(deck, dealCount) {
   try {
-    const cardsDealt = deck.dealOneOrMoreCards(dealCount)
+    const cardsDealt = deck.dealOneOrMoreCards(dealCount);
     for (let i = 0; i < cardsDealt.length; i++) {
       const divToAdd = document.createElement("div");
       divToAdd.innerHTML = cardsDealt[i].getCardAsString();
@@ -38,7 +38,7 @@ function renderCardDeal(deck, dealCount) {
     if (err instanceof EmptyDeckException) {
       alert("There are no cards left in the deck to deal.");
     } else {
-      console.log(err)
+      console.log(err);
     }
   }
 }
